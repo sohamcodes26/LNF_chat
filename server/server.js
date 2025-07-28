@@ -19,9 +19,6 @@ import result_router from "./routes/resultroute.js";
 import { connectdb } from "./config/database.js";
 import { validate_token } from "./middlewares/validate_token.js"; 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 9000;
@@ -70,10 +67,16 @@ io.on('connection', (socket) => {
     });
 });
 
-app.use(express.static(path.join(__dirname, '../client/dist')));
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const distPath = path.resolve(__dirname, '../client/dist');
+app.use(express.static(distPath));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 
